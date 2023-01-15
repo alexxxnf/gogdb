@@ -439,7 +439,7 @@ async def processors_main(db, processors):
 
 def main():
     config = quart.Config(".")
-    config.from_envvar("GOGDB_CONFIG")
+    config.from_prefixed_env("GOGDB")
     db = storage.Storage(config["STORAGE_PATH"])
 
     logging.basicConfig()
@@ -470,4 +470,8 @@ def main():
     if processors:
         asyncio.run(processors_main(db, processors))
 
-main()
+    return 0
+
+
+if __name__ == "__main__":
+    exit(main())

@@ -2,132 +2,55 @@
 
 Website that collects data on GOG games.
 
-# Deployment Instructions
+## Configuration
 
-All commands need to be run as root. They are specific to Debian Buster, Apache2 and
-Gunicorn. If you want to use a different web or app server search for deploying
-Flask applications on it.
+The project can be configured via environment variables.
 
-## Application
+| Parameter                   | Default value | Required | Description |
+|-----------------------------|---------------|----------|-------------|
+| `GOGDB_STORAGE_PATH`        |               | y        |             |
+| `GOGDB_NUM_PRODUCT_TASKS`   | `1`           |          |             |
+| `GOGDB_UPDATER_LOGLEVEL`    | `NOTSET`      |          |             |
+| `GOGDB_DEBUG`               |               |          |             |
+| `GOGDB_JINJA_LSTRIP_BLOCKS` | `False`       |          |             |
+| `GOGDB_JINJA_TRIM_BLOCKS`   | `False`       |          |             |
 
-Clone the application
+## Database
 
-    # cd /usr/local/share
-    # git clone https://github.com/Yepoleb/gogdb.git
-    # cd gogdb
-
-Create system user for the updater
-
-    # adduser --system --home /var/lib/gogdb/ --shell /bin/bash --no-create-home --group --disabled-login --gecos 'GOG DB' gogdb
-
-Create a login token for the updater to use
-
-    # scripts/run.sh token token.json
-    # mkdir -p /var/lib/gogdb/storage/secret/
-    # mv token.json /var/lib/gogdb/storage/secret/token.json
-
-Set access rights
-
-    # chown -R gogdb:gogdb /var/lib/gogdb/storage/
-    # chmod g-rwx,o-rwx -R /var/lib/gogdb/storage/secret/
-
-Copy the example config and set the storage path
-
-    # mkdir /etc/gogdb
-    # cp example-production.py /etc/gogdb/config-production.py
-    # editor /etc/gogdb/config-production.py
-
-Build assets. Both commands have to be run in a root shell because sudo resets the environment variables
-
-    # export GOGDB_CONFIG=/etc/gogdb/config-production.py
-    # scripts/run.sh assets
-
-## Apache2
-
-Apache is used as the webserver to serve static assets and to translate
-HTTP/HTTPS into uwsgi requests.
-
-Install Apache2
-
-    # apt install apache2
-
-Copy the config
-
-    # cp conf/apache2/gogdb.conf /etc/apache2/sites-available/
-
-Enable required modules
-
-    # a2enmod proxy
-    # a2enmod expires
-
-Enable the site
-
-    # a2ensite gogdb
-
-Restart Apache2
-
-    # systemctl restart apache2
-
-## Gunicorn
-
-Gunicorn is the default application server for GOG DB
-
-Install Gunicorn
-
-    # apt install gunicorn3
-
-Copy the systemd service file
-
-    # cp conf/systemd/gogdb.service /etc/systemd/system/
-
-Start service
-
-    # systemctl daemon-reload
-    # systemctl enable gogdb
-    # systemctl start gogdb
+This project uses [SQLite](https://www.sqlite.org/) as a relational database for search index.
 
 ## Scripts
+* `gogdb-token`
+* `gogdb-updater`
+* `gogdb-cleanup`
 
-Scripts insert the data into the database and keep it up to date. They are
-also used to build the search index.
+## Local development
 
-Copy the systemd email notify service to receive failed task notifications
+Target platform for this project is [Python 3.10](https://python.org/)
+running on [Ubuntu](https://ubuntu.com/).
+It may work with higher or lower versions of Python and Ubuntu but compatibility is not guaranteed.
 
-    # cp conf/systemd/email-notify@.service /etc/systemd/system/
+### Dependencies
 
-Copy the systemd services for the updater
+The project uses [Poetry](https://python-poetry.org/) as a package manager. Consider installing it globally.
 
-    # cp conf/systemd/gogdb-updater.* /etc/systemd/system/
-    
-Enable the timer
+It is recommended to use a virtual environment.
 
-    # systemctl daemon-reload
-    # systemctl enable gogdb-updater.timer
-    # systemctl start gogdb-updater.timer
+To install python dependencies run `poetry install` in the root directory.
 
-Copy the systemd services for the backup
+If you prefer to use `requirements.txt`, run `poetry export -o /requirements.txt`.
+It will convert poetry-style list of requirements to pip's one.
 
-    # cp conf/systemd/gogdb-backup.* /etc/systemd/system/
-    
-Enable the timer
+### Development server
 
-    # systemctl daemon-reload
-    # systemctl enable gogdb-backup.timer
-    # systemctl start gogdb-backup.timer
+Adjust [configuration](#configuration).
 
-## Development
+Run `hypercorn gogdb.application:app` for a dev server.
 
-1. Create a storage directory
-2. Adapt `config-development.py` from `example-development.py`
-3. Generate a token as described in the application setup process
+## Production deployment
 
-The `scripts/run.sh` script is a convenient way to run the components of GOG DB with development defaults.
-
-# Database Migrations
-
-See [MIGRATIONS.md](MIGRATIONS.md)
+TBD
 
 # License
 
 AGPLv3 or later
-
