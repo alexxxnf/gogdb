@@ -18,3 +18,8 @@ gogdb/generated/
 
 # Obsolete files
 old
+
+# Docker
+/docker/docker-compose.override.yaml
+/docker/volumes/*
+!/docker/volumes/config.py

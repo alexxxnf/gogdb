@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "gogdb"
+version = "0.4.0"
+description = "GOG Database"
+authors = ["Gabriel Huber <gabriel@yepoleb.at>"]
+license = "GPL-3.0-or-later"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+quart = "^0.18.3"
+jinja2 = "~3.0.0"
+pygal = "^3.0.0"
+lxml = "^4.9.2"
+aiosqlite = "^0.18.0"
+aiofiles = "^22.1.0"
+aiohttp = "^3.8.3"
+python-dateutil = "^2.8.2"
+bleach = "^5.0.1"
+
+[tool.poetry.scripts]
+gogdb-updater = 'gogdb.updater.updater:main'
+gogdb-token = 'gogdb.updater.gogtoken:main'
+gogdb-cleanup = 'gogdb.tools.cleanup:main'
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

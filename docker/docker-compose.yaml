@@ -1,0 +1,16 @@
+version: '3.1'
+
+services:
+  app:
+    image: gogdb:latest
+    environment:
+      GOGDB_STORAGE_PATH: "/storage/"
+      GOGDB_NUM_PRODUCT_TASKS: 1
+      GOGDB_UPDATER_LOGLEVEL: "INFO"
+      GOGDB_DEBUG: "False"
+      GOGDB_JINJA_LSTRIP_BLOCKS: "True"
+      GOGDB_JINJA_TRIM_BLOCKS: "True"
+    ports:
+      - "3031:3031"
+    volumes:
+      - "./volumes/storage/:/storage/"

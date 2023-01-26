@@ -1,4 +1,3 @@
-import shutil
 import datetime
 import asyncio
 
@@ -102,9 +101,9 @@ async def cleanup_worker(db, ids, worker_num):
         await remove_extra_fields(db, prod_id)
 
 
-async def main():
+async def a_main():
     config = quart.Config(".")
-    config.from_envvar("GOGDB_CONFIG")
+    config.from_prefixed_env("GOGDB")
     db = Storage(config["STORAGE_PATH"])
     ids = await db.ids.load()
     worker_tasks = [
@@ -112,5 +111,12 @@ async def main():
         for worker_num in range(8)
     ]
     await asyncio.gather(*worker_tasks, return_exceptions=False)
+    return 0
 
-asyncio.run(main())
+
+def main():
+    return asyncio.run(a_main())
+
+
+if __name__ == "__main__":
+    exit(main())

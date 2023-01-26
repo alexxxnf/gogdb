@@ -120,7 +120,8 @@ class GogToken:
     def __repr__(self):
         return repr(self.__dict__)
 
-async def main():
+
+async def a_main():
     import re
     import sys
 
@@ -150,6 +151,10 @@ async def main():
     print("Token saved at", token_filepath)
     return 0
 
+
+def main():
+    return asyncio.run(a_main())
+
+
 if __name__ == "__main__":
-    exit_code = asyncio.run(main())
-    exit(exit_code)
+    exit(main())
